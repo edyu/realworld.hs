@@ -1,4 +1,4 @@
 realworld.hs
 ============
 
-Solutions to exercises in "Real World Haskell.
+Solutions to exercises in "Real World Haskell".
