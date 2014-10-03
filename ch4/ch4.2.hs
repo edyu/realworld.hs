@@ -32,9 +32,32 @@ asInt_either ('-':xs) = case (asInt_either xs) of
                           Right n -> Right (negate n)
 asInt_either [] = Left "not a number"
 asInt_either xs = foldl accInt (Right 0) xs
-  where accInt (Right acc) x | x >= '0' && x <= '9' = let intmax = (maxBound :: Int) `div` (digitToInt x)
-                                              in  if acc < intmax
-                                                  then Right (acc * 10 + (digitToInt x))
-                                                  else Left (xs ++ " is too big")
+  where accInt (Right acc) x | x >= '0' && x <= '9' =
+          let intmax = (maxBound :: Int) `div` (digitToInt x)
+          in  if acc < intmax
+              then Right (acc * 10 + (digitToInt x))
+              else Left (xs ++ " is too big")
                              | otherwise = Left ("non-digit '" ++ [x] ++ "'")
         accInt (Left err) _ = Left err
+
+-- Exercise 5 & 6
+myConcat :: [[a]] -> [a]
+myConcat xxs = foldr (++) [] xxs
+
+-- Exercise 7
+myTakeWhile :: (a -> Bool) -> [a] -> [a]
+myTakeWhile _ [] = []
+myTakeWhile p (x:xs) | p x       = x : myTakeWhile p xs
+                     | otherwise = []
+
+myTakeWhiler :: (a -> Bool) -> [a] -> [a]
+myTakeWhiler p xs = foldr f [] xs
+  where f x acc | p x = x : acc
+                | otherwise = []
+
+-- Exercise 8 & 9
+myGroupBy :: (a -> a -> Bool) -> [a] -> [[a]]
+myGroupBy p xs = foldr g [] xs
+  where g x [] = [[x]]
+        g x acc@(y:ys) | p x (head y) = (x : y) : ys
+                       | otherwise    = [x] : acc
