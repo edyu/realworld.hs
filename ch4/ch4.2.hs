@@ -56,11 +56,21 @@ myTakeWhiler p xs = foldr f [] xs
                 | otherwise = []
 
 -- Exercise 8 & 9
-myGroupBy :: (a -> a -> Bool) -> [a] -> [[a]]
-myGroupBy p xs = foldr g [] xs
+-- Compare every successive (overlapping) pair using the predicate
+-- Start a new group whenever the predicate is false
+wrongGroupBy :: (a -> a -> Bool) -> [a] -> [[a]]
+wrongGroupBy p xs = foldr g [] xs
   where g x [] = [[x]]
         g x acc@(y:ys) | p x (head y) = (x : y) : ys
                        | otherwise    = [x] : acc
+
+-- Compare every successive item with the head
+-- Start a new group and a new head whenever the predicate is false
+myGroupBy :: (a -> a -> Bool) -> [a] -> [[a]]
+myGroupBy p xs = foldl step [] xs
+  where step [] x = [[x]]
+        step acc x | p (head (last acc)) x = (init acc) ++ [(last acc) ++ [x]]
+                   | otherwise = acc ++ [[x]]
 
 -- Exercise 10
 myAny :: (a -> Bool) -> [a] -> Bool
