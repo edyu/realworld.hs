@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -Wall #-}
 
-import Data.Char (digitToInt)
+import Data.Char (digitToInt, isSpace)
 
 -- Exercise 1
 asInt :: String -> Int
@@ -61,3 +61,31 @@ myGroupBy p xs = foldr g [] xs
   where g x [] = [[x]]
         g x acc@(y:ys) | p x (head y) = (x : y) : ys
                        | otherwise    = [x] : acc
+
+-- Exercise 10
+myAny :: (a -> Bool) -> [a] -> Bool
+myAny p xs = foldr f False xs
+  where f x acc | p x = True
+                | otherwise = acc
+
+myCycle :: [a] -> [a]
+myCycle xs = foldr f xs xs
+  where f _ acc = acc ++ (myCycle acc)
+
+myWords :: String -> [String]
+myWords xs = let zs = foldr f [] xs
+             in  case zs of
+                   [] -> []
+                   (s:sz) | s == "" -> sz
+                          | otherwise -> zs
+  where f x [] | isSpace x = []
+               | otherwise = [[x]]
+        f x ([]:ys) | isSpace x = []:ys
+                    | otherwise = [x]:ys
+        f x (y:ys) | isSpace x = []:(y:ys)
+                   | otherwise = (x:y):ys
+
+--myUnlines
+myUnlines :: [String] -> String
+myUnlines xs = foldr join "" xs
+  where join l acc = l ++ "\n" ++ acc
